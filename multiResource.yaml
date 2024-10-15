@@ -1,0 +1,31 @@
+Resources:
+  VprofileSG:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Allow ssh & http from My IP
+      VpcId: vpc-0b1926b3971f85f27
+      SecurityGroupIngress:
+      - IpProtocol: tcp
+        FromPort: 80
+        ToPort: 80
+        CidrIp: 0.0.0.0/0
+      - IpProtocol: tcp
+        FromPort: 22
+        ToPort: 22
+        CidrIp: 5.15.115.141/32
+  
+  MyInstance:
+    Type: AWS::EC2::Instance
+    Properties:
+      InstanceType: t2.micro
+      ImageId: ami-06b21ccaeff8cd686
+      VpcId: vpc-0b1926b3971f85f27
+      SubnetId: subnet-016d76d668e79d8b6
+      Tags:
+        - Key: "Name"
+          Value: !Join ["-", [my, inst, from, cloudformation]]
+      SecurityGroupIds:
+        - !Ref VprofileSG
+      #!Select: ["1", ["VprofileSG"]]
+      #SecurityGroups:
+      #  - !Ref VprofileSG   
